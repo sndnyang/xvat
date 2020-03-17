@@ -204,8 +204,8 @@ def visualize_adv_points(model, d_i, x_data, y_data, ul_x, ul_y, adv_x, adv_y, b
         plt.ylim([-2. * rescale, 2. * rescale])
         plt.xticks([-2.0, -1.0, 0, 1, 2.0], fontsize=font_size)
         plt.yticks([-2.0, -1.0, 0, 1, 2.0], fontsize=font_size)
-        if show_contour and cs is not None:
-            color_bar = plt.colorbar(cs)
-            color_bar.ax.tick_params(labelsize=font_size)
+        # if show_contour and cs is not None:
+        #     color_bar = plt.colorbar(cs)
+        #     color_bar.ax.tick_params(labelsize=font_size)
         plt.savefig(save_filename)
     plt.close()
