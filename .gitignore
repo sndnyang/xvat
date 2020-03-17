@@ -1,0 +1,14 @@
+*.pyc
+*.idea
+*.pkl
+*.mp4
+dataset/svhn0-1.py
+dataset/cifar10_0.5.py
+dataset/cifar10_0-1.py
+*old*
+*.docx
+*.synctex
+*.rar
+*.zip
+demo
+dllib
