@@ -226,7 +226,8 @@ def train(dataset_kit, model_kit, args):
                     dicts['train/DisAvg'] = mean
                     dicts['train/DisMin'] = min
                     dicts['train/DisMax'] = max
-                vis_step(args.writer, epoch * args.num_batch_it + it, dicts)
+                if args.vis:
+                    vis_step(args.writer, epoch * args.num_batch_it + it, dicts)
             elif "ax" == args.trainer:
                 ul_loss, perturbations = reg_component(model, ul_images, generator, l0_ins, alpha_opt, kl_way=args.kl)
                 total_loss = sup_loss + ul_loss
@@ -275,7 +276,8 @@ def train(dataset_kit, model_kit, args):
                         dicts['Train/DisMin'] = min
                         dicts['Train/DisMax'] = max
                         np.savetxt("%s/demo/%d_dist.txt" % (args.dir_path, epoch), l2_dis.detach().cpu().numpy(), delimiter=',', fmt='%.2f', newline=',')
-                    vis_step(args.writer, epoch, dicts)
+                    if args.vis:
+                        vis_step(args.writer, epoch, dicts)
 
                     save_interval = 5
                     if args.epoch_decay_start + 10 > epoch >= args.epoch_decay_start:

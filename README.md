@@ -27,17 +27,23 @@ Examples of multiplicative perturbations on 'Moons' dataset:
 1. git clone https://github.com/sndnyang/L0VAT 
 
 2. Download the Datasets(MNIST, SVHN, CIFAR10):
-   
+
    On CIFAR-10
-   
+
    ```
    python dataset/cifar10.py --data_dir=./data/cifar10/
    ```
-   
+
    On SVHN
-   
+
    ```
    python dataset/svhn.py --data_dir=./data/svhn/
+   ```
+
+   Visualize on CIFAR-10 base on normalized data in the range between [0, 1], otherwise, you should not enable --vis
+
+   ```
+   python dataset/cifar10_0-1.py --data_dir=./data1.0/cifar10/
    ```
 # Usage
 
@@ -84,7 +90,7 @@ optional arguments:
   --ent-min             use entropy minimum
   --kl KL               unlabel loss computing, (default: 1)
   --aug-trans           data augmentation
-  --aug-flip            data augmentation flip
+  --aug-flip            data augmentation flip(for CIFAR)
   --drop DROP           dropout rate, (default: 0.5)
   --log-dir S           tensorboard directory, (default: an absolute path)
   --log-arg S           show the arguments in directory name
