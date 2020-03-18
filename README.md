@@ -133,12 +133,11 @@ python l0_vat_sup_inductive.py --trainer=inl0 --dataset=mnist --arch=MLPSup --da
 If you found this code useful, please cite our paper.
 
 ```latex
-@article{yang2019learning,
+@article{xvat2019,
 	title={Learning with Multiplicative Perturbations},
 	author={Xiulong Yang and Shihao Ji},
-	year={2019},
+	journal={arXiv preprint arXiv:1912.01810},
+	year={2019}
 }
 ```
-
-​    
 
