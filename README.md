@@ -117,14 +117,15 @@ python l0_vat_sup_inductive.py --trainer=inl0 --dataset=mnist --arch=MLPSup --da
 
 ## Semi-Supervised Learning
 
+See the bash files in scripts/
 
 ### transductive way
 
-    python l0_vat_semi.py
+    python l0_vat_semi_trans.py --trainer=l0 --dataset=svhn --arch=CNN9
 
 ### inductive way
 
-    python l0_vat_semi_inductive.py
+    python l0_vat_semi_inductive.py --trainer=inl0 --dataset=cifar10 --arch=CNN9
 
 
 
