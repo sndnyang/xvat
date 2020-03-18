@@ -17,7 +17,7 @@ python l0_vat_semi_inductive.py \
   --lamb2=0   \
   --kl=1      \
   --k=1       \
-  --lr-a=0.00001      \
+  --lr-a=0.000001      \
   --lr=0.001          \
   --lr-decay=0.95     \
   --num-batch-it=500  \

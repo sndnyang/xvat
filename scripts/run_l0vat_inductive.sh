@@ -10,14 +10,13 @@ function cifar10() {
       --data-dir=dataset \
       --trainer=inl0  \
       --arch=CNN9  \
-      --max-lamb=0.1  \
-      --layer=3       \
+      --layer=1       \
       --zeta=1.1      \
       --gamma=-0.1    \
       --beta=0.66     \
       --lamb=3    \
       --lamb2=1   \
-      --lr-a=0.00001      \
+      --lr-a=0.000001      \
       --lr=0.003          \
       --debug           \
       --vis --log-dir=
@@ -32,14 +31,13 @@ function svhn() {
       --data-dir=dataset \
       --trainer=inl0  \
       --arch=CNN9  \
-      --max-lamb=0.1  \
-      --layer=3       \
+      --layer=1       \
       --zeta=1.1      \
       --gamma=-0.1    \
       --beta=0.66     \
       --lamb=3    \
       --lamb2=1   \
-      --lr-a=0.00001      \
+      --lr-a=0.000001      \
       --lr=0.003          \
       --debug           \
       --vis --log-dir=

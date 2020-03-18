@@ -196,7 +196,7 @@ def visualize_adv_points(model, d_i, x_data, y_data, ul_x, ul_y, adv_x, adv_y, b
         cs = plt.contour(x * rescale, y * rescale, z, 7, cmap='bwr', vmin=0., vmax=1.0, linewidths=8., levels=levels)
         plt.setp(cs.collections, linewidth=1.0)
         plt.contour(x * rescale, y * rescale, z, 1, cmap='binary', vmin=0, vmax=0.5, linewidths=2.0)
-        plt.title('%s\n iteration %d, error rate %g' % (args.exp_marker, it, rate))
+        plt.title('Iteration %d, error rate %g' % (it, rate))
         fig.set_size_inches(8, 6)
         plt.xticks(fontsize=font_size)
         plt.yticks(fontsize=font_size)
