@@ -10,10 +10,6 @@ The evolutions of decision boundaries of the learned networks on synthetic "Moon
 
 ![demo](https://github.com/sndnyang/xvat/raw/master/demo/moons.gif)
 
-Examples of multiplicative perturbations on 'Moons' dataset:
-
-![demo](https://github.com/sndnyang/xvat/raw/master/demo/moons_perturbations.gif)
-
 ## Requirements
 
     PyTorch >= 0.4.0
