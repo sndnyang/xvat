@@ -14,8 +14,6 @@ from torch_func.load_dataset import load_dataset
 from torch_func.mnist_load_dataset import load_dataset as mnist_load_dataset
 import models
 from Loss import L0Layer, IndL0VATOne, IndL0ATOne, AT
-from Loss.AXVATOne import AXVATOne
-from Loss.AXVAT import AXVAT
 from Loss.l0_utils import *
 from Loss.LocationGenerator import InductiveGenerator
 

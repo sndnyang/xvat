@@ -10,7 +10,7 @@ import tensorboardX as tbX
 
 from models.MLPSyn import MLPSyn
 from torch_func.utils import set_framework_seed, weights_init_uniform
-from Loss import L0Layer, L0VATOne, L0VAT, AutoL0Layer, L0VATSym
+from Loss import L0Layer, L0VATOne, L0VAT, AutoL0Layer
 from visual_func import *
 
 
@@ -134,27 +134,18 @@ def train(dataset_kit, model_kit, components, args):
     local_best_rate = 100
     fig_count = 0
 
-    idx = list(range(30))
+    idx = list(range(20))
     if args.vis:
         if "l0" in args.trainer:
-            semi_name = "%s/pert_%d_00.jpg" % (args.dir_path, args.seed)
             log_alpha = log_alphas[idx]
-            l0_ins.eval()
-            masks = l0_ins.get_mask(log_alpha)
-            m = args.eps * masks.cpu().detach().numpy() * x_valid[idx].cpu().numpy()
-            visualize_adv_points(model, args.dataset, x_train, t_train, x_valid[idx], t_valid[idx], m, t_valid[idx], dataset[1], 0, 0, args, save_filename=semi_name)
-            semi_name = "%s/pert_%d_%d.jpg" % (args.dir_path, args.seed, 0)
             l0_ins.train()
             masks = l0_ins.get_mask(log_alpha)
             m = args.eps * masks.cpu().detach().numpy() * x_valid[idx].cpu().numpy()
-            visualize_adv_points(model, args.dataset, x_train, t_train, x_valid[idx], t_valid[idx], m, t_valid[idx], dataset[1], 0, 0, args, save_filename=semi_name)
         if "vat" in args.trainer:
             _, m = reg_component(model, x_valid[idx].to(args.device), return_adv=True)
             m = (m.cpu() + x_valid[idx]).numpy()
-            semi_name = "%s/pert_%d_%d.jpg" % (args.dir_path, args.seed, fig_count)
-            visualize_adv_points(model, args.dataset, x_train, t_train, x_valid[idx], t_valid[idx], m, t_valid[idx], dataset[1], 0, 0, args, save_filename=semi_name)
-        semi_name = "%s/step_%d_%d.jpg" % (args.dir_path, args.seed, fig_count)
-        visualize_contour_semi(model, args.dataset, x_train, t_train, x_valid, t_valid, dataset[1], valid_loader, args, save_filename=semi_name)
+        semi_name = "%s/all_%d_%d.jpg" % (args.dir_path, args.seed, 0)
+        visualize_all(model, args.dataset, x_train, t_train, x_valid, t_valid, m, idx, dataset[1], valid_loader, 0, 0, args, save_filename=semi_name)
 
     if "l0" in args.trainer:
         idx = list(range(10))
@@ -220,13 +211,10 @@ def train(dataset_kit, model_kit, components, args):
             if error_rate < local_best_rate:
                 local_best_rate = error_rate
 
-            idx = list(range(30))
+            idx = list(range(20))
             if "vat" in args.trainer and args.vis:
                 _, m = reg_component(model, x_valid[idx].to(args.device), return_adv=True)
                 m = (m.cpu() + x_valid[idx]).numpy()
-                if args.vis and i % args.log_interval == 0:
-                    semi_name = "%s/pert_%d_%d.jpg" % (args.dir_path, args.seed, fig_count)
-                    visualize_adv_points(model, args.dataset, x_train, t_train, x_valid[idx], t_valid[idx], m, t_valid[idx], dataset[1], i, test_err, args, save_filename=semi_name)
 
             if "l0" in args.trainer:
                 log_alpha = log_alphas[idx]
@@ -234,14 +222,11 @@ def train(dataset_kit, model_kit, components, args):
                 wlog("avg log alpha is %g, shape %s" % (torch.mean(log_alpha), str(log_alpha.shape)))
                 wlog("avg mask is %g, shape %s" % (torch.mean(masks), str(masks.shape)))
                 m = args.eps * masks.cpu().detach().numpy() * x_valid[idx].cpu().numpy()
-                if args.vis and i % args.log_interval == 0:
-                    semi_name = "%s/pert_%d_%d.jpg" % (args.dir_path, args.seed, fig_count)
-                    visualize_adv_points(model, args.dataset, x_train, t_train, x_valid[idx], t_valid[idx], m, t_valid[idx], dataset[1], i, test_err, args, save_filename=semi_name)
                 if "l0a" in args.trainer:
                     wlog("eps %g" % l0_ins.eps)
         if args.vis and i % args.log_interval == 0:
-            semi_name = "%s/step_%d_%d.jpg" % (args.dir_path, args.seed, fig_count)
-            visualize_contour_semi(model, args.dataset, x_train, t_train, x_valid, t_valid, dataset[1], valid_loader, args, save_filename=semi_name)
+            semi_name = "%s/all_%d_%d.jpg" % (args.dir_path, args.seed, fig_count)
+            visualize_all(model, args.dataset, x_train, t_train, x_valid, t_valid, m, idx, dataset[1], valid_loader, i, 0, args, save_filename=semi_name)
             fig_count += 1
     return err_rate_list, error_rate, local_best_rate
 

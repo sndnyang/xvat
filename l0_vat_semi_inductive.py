@@ -13,9 +13,7 @@ from torch_func.evaluate import evaluate_classifier
 from torch_func.load_dataset import load_dataset
 from torch_func.mnist_load_dataset import load_dataset as mnist_load_dataset
 import models
-from Loss import L0Layer, IndL0VATOne, IndL0VATSym
-from Loss.AXVATOne import AXVATOne
-from Loss.AXVAT import AXVAT
+from Loss import L0Layer, IndL0VATOne
 from Loss.l0_utils import *
 from Loss.LocationGenerator import InductiveGenerator
 from Loss.VAT import VAT
@@ -164,8 +162,6 @@ def train(dataset_kit, model_kit, args):
     l0_ins = L0Layer(args)
     l0_ins.train()
     reg_component = IndL0VATOne(args)
-    if "inl0s" == args.trainer:
-        reg_component = IndL0VATSym(args)
     if "vat" in args.trainer:
         reg_component = VAT(args)
 

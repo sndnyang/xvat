@@ -8,7 +8,21 @@ from torch_func.evaluate import evaluate_classifier
 from Loss import VAT
 
 
-def visualize_contour_semi(model, d_i, x_data, y_data, ul_x, ul_y, basis, val_loader, args, with_lds=True, save_filename='prob_cont', show_contour=True):
+def visualize_all(model, d_i, x_data, y_data, ul_x, ul_y, adv_x, idx, basis, val_loader, it, rate, args, save_filename='prob_cont'):
+    adv_y = ul_y[idx]
+
+    fig = plt.figure(12)
+    fig.set_size_inches(12, 6)
+    plt.suptitle('xVAT\nIteration %d' % it)
+    plt.subplot(1, 2, 1)
+    visualize_contour_semi(model, d_i, x_data, y_data, ul_x, ul_y, basis, val_loader, args, show_contour=False)
+    plt.subplot(1, 2, 2)
+    visualize_adv_points(model, d_i, x_data, y_data, ul_x[idx], ul_y[idx], adv_x, adv_y, basis, it, rate, args)
+    fig.savefig(save_filename)
+    plt.close()
+
+
+def visualize_contour_semi(model, d_i, x_data, y_data, ul_x, ul_y, basis, val_loader, args, with_lds=False, save_filename='prob_cont', show_contour=True):
     line_width = 10
 
     range_x = np.arange(-2.0, 2.1, 0.05)
@@ -62,8 +76,6 @@ def visualize_contour_semi(model, d_i, x_data, y_data, ul_x, ul_y, basis, val_lo
         frame.add_artist(circle1)
         frame.add_artist(circle2)
 
-    frame.axes.get_xaxis().set_visible(False)
-    frame.axes.get_yaxis().set_visible(False)
     plt.scatter(ul_x_org[ul_x_1_ind, 0] * rescale, ul_x_org[ul_x_1_ind, 1] * rescale, s=2, marker='o', c=rc, label='$y=1$')
     plt.scatter(ul_x_org[ul_x_0_ind, 0] * rescale, ul_x_org[ul_x_0_ind, 1] * rescale, s=2, marker='o', c=bc, label='$y=0$')
     plt.scatter(train_x_org[train_x_1_ind, 0] * rescale, train_x_org[train_x_1_ind, 1] * rescale, s=50, marker='o', c=rc, label='$y=1$',
@@ -89,32 +101,27 @@ def visualize_contour_semi(model, d_i, x_data, y_data, ul_x, ul_y, basis, val_lo
         lds_part = ' $\widetilde{\\rm LDS}=%.3f$' % ave_lds
         args.k = 1
         args.eps = eps
-    fig.set_size_inches(5, 5)
     if save_filename is None:
         plt.show(block=False)
     else:
         cs = None
-        if show_contour:
-            levels = [0.05, 0.2, 0.35, 0.5, 0.65, 0.8, 0.95]
-            cs = plt.contour(x * rescale, y * rescale, z, 7, cmap='bwr', vmin=0., vmax=1.0, linewidths=8., levels=levels)
-            plt.setp(cs.collections, linewidth=1.0)
-            plt.contour(x * rescale, y * rescale, z, 1, cmap='binary', vmin=0, vmax=0.5, linewidths=2.0)
-        plt.tight_layout()
-        plt.savefig(save_filename)
+        levels = [0.05, 0.2, 0.35, 0.5, 0.65, 0.8, 0.95]
+        cs = plt.contour(x * rescale, y * rescale, z, 7, cmap='bwr', vmin=0., vmax=1.0, linewidths=8., levels=levels)
+        plt.setp(cs.collections, linewidth=1.0)
+        plt.contour(x * rescale, y * rescale, z, 1, cmap='binary', vmin=0, vmax=0.5, linewidths=2.0)
+        # plt.tight_layout()
+        # plt.savefig(save_filename)
         if show_contour:
             plt.title('%s\nError %g%s' % (args.exp_marker, err_rate, lds_part))
-        fig.set_size_inches(8, 6)
         plt.xticks(fontsize=font_size)
         plt.yticks(fontsize=font_size)
         plt.xlim([-2. * rescale, 2. * rescale])
         plt.ylim([-2. * rescale, 2. * rescale])
         plt.xticks([-2.0, -1.0, 0, 1, 2.0], fontsize=font_size)
         plt.yticks([-2.0, -1.0, 0, 1, 2.0], fontsize=font_size)
-        if show_contour and cs is not None:
+        if show_contour:
             color_bar = plt.colorbar(cs)
             color_bar.ax.tick_params(labelsize=font_size)
-        plt.savefig(save_filename.replace("step", "title"))
-    plt.close()
 
 
 def visualize_adv_points(model, d_i, x_data, y_data, ul_x, ul_y, adv_x, adv_y, basis, it, rate, args, save_filename='prob_cont', show_contour=True):
@@ -153,12 +160,9 @@ def visualize_adv_points(model, d_i, x_data, y_data, ul_x, ul_y, adv_x, adv_y, b
     y, x = np.meshgrid(range_x, range_x)
 
     font_size = 20
+
     rc = 'r'
     bc = 'b'
-
-    gc = 'g'
-    grc = 'gray'
-
     if d_i == "1":
         rescale = 1.0  # /np.sqrt(500)
         arc1 = plot_patch.Arc(xy=(0.5 * rescale, -0.25 * rescale), width=2.0 * rescale, height=2.0 * rescale, angle=0, theta1=270,
@@ -178,34 +182,36 @@ def visualize_adv_points(model, d_i, x_data, y_data, ul_x, ul_y, adv_x, adv_y, b
         frame.add_artist(circle1)
         frame.add_artist(circle2)
 
-    plt.scatter(adv_x_org[adv_x_1_ind, 0] * rescale, adv_x_org[adv_x_1_ind, 1] * rescale, s=25, marker='o', c=rc, label='$y=1$')
-    plt.scatter(adv_x_org[adv_x_0_ind, 0] * rescale, adv_x_org[adv_x_0_ind, 1] * rescale, s=25, marker='o', c=bc, label='$y=0$')
-    plt.scatter(ul_x_org[ul_x_1_ind, 0] * rescale, ul_x_org[ul_x_1_ind, 1] * rescale, s=10, marker='o', c=rc, label='$y=1$')
-    plt.scatter(ul_x_org[ul_x_0_ind, 0] * rescale, ul_x_org[ul_x_0_ind, 1] * rescale, s=10, marker='o', c=bc, label='$y=0$')
+    frame.axes.get_yaxis().set_visible(False)
 
+    colors = ['b', 'r', 'orange', 'purple', 'cyan', 'yellow', 'brown', 'y', 'c', 'lime', ]
+    plt.scatter(adv_x_org[adv_x_1_ind, 0] * rescale, adv_x_org[adv_x_1_ind, 1] * rescale, s=25, marker='o', c=colors, label='$y=1$')
+    plt.scatter(adv_x_org[adv_x_0_ind, 0] * rescale, adv_x_org[adv_x_0_ind, 1] * rescale, s=25, marker='o', c=colors, label='$y=0$')
+    plt.scatter(ul_x_org[ul_x_1_ind, 0] * rescale, ul_x_org[ul_x_1_ind, 1] * rescale, s=10, marker='o', c=colors, label='$y=1$')
+    plt.scatter(ul_x_org[ul_x_0_ind, 0] * rescale, ul_x_org[ul_x_0_ind, 1] * rescale, s=10, marker='o', c=colors, label='$y=0$')
+
+    gc = 'g'
+    grc = 'gray'
     plt.scatter(train_x_org[train_x_1_ind, 0] * rescale, train_x_org[train_x_1_ind, 1] * rescale, s=50, marker='o', c=gc, label='$y=1$',
                 edgecolor='black', linewidth=1)
     plt.scatter(train_x_org[train_x_0_ind, 0] * rescale, train_x_org[train_x_0_ind, 1] * rescale, s=50, marker='o', c=grc, label='$y=0$',
                 edgecolor='black', linewidth=1)
 
-    fig.set_size_inches(5, 5)
     if save_filename is None:
         plt.show(block=False)
     else:
-        levels = [0.1, 0.25, 0.5, 0.75, 0.9]
+        levels = [0.05, 0.2, 0.35, 0.5, 0.65, 0.8, 0.95]
         cs = plt.contour(x * rescale, y * rescale, z, 7, cmap='bwr', vmin=0., vmax=1.0, linewidths=8., levels=levels)
         plt.setp(cs.collections, linewidth=1.0)
         plt.contour(x * rescale, y * rescale, z, 1, cmap='binary', vmin=0, vmax=0.5, linewidths=2.0)
-        plt.title('Iteration %d, error rate %g' % (it, rate))
-        fig.set_size_inches(8, 6)
         plt.xticks(fontsize=font_size)
         plt.yticks(fontsize=font_size)
         plt.xlim([-2. * rescale, 2. * rescale])
         plt.ylim([-2. * rescale, 2. * rescale])
         plt.xticks([-2.0, -1.0, 0, 1, 2.0], fontsize=font_size)
         plt.yticks([-2.0, -1.0, 0, 1, 2.0], fontsize=font_size)
-        # if show_contour and cs is not None:
-        #     color_bar = plt.colorbar(cs)
-        #     color_bar.ax.tick_params(labelsize=font_size)
-        plt.savefig(save_filename)
-    plt.close()
+        fig.subplots_adjust(right=0.88)
+        cbar_ax = fig.add_axes([0.90, 0.05, 0.02, 0.7])
+        color_bar = plt.colorbar(cs, cbar_ax)
+        color_bar.ax.tick_params(labelsize=font_size)
+        # plt.savefig(save_filename)
