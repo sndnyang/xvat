@@ -6,7 +6,7 @@ This reposityory contains the PyTorch implementation for [Learning with Multipli
 
 ## Demo
 
-The evolutions of decision boundaries of the learned networks on synthetic "Moons" dataset:
+The evolutions of (left) decision boundaries of the learned networks and (right) the generated multiplicative perturbations on synthetic "Moons" dataset:
 
 ![demo](https://github.com/sndnyang/xvat/raw/master/demo/moons.gif)
 
