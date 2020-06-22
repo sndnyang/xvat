@@ -20,7 +20,7 @@ The evolutions of (left) decision boundaries of the learned networks and (right)
 ​    
 # Download Datasets
 
-1. git clone https://github.com/sndnyang/L0VAT 
+1. git clone https://github.com/sndnyang/xvat
 
 2. Download the Datasets(MNIST, SVHN, CIFAR10):
 
@@ -139,8 +139,8 @@ If you found this code useful, please cite our paper.
 @article{xvat2019,
 	title={Learning with Multiplicative Perturbations},
 	author={Xiulong Yang and Shihao Ji},
-	journal={arXiv preprint arXiv:1912.01810},
-	year={2019}
+	journal={International Conference on Pattern Recognition (ICPR)},
+	year={2020}
 }
 ```
 
