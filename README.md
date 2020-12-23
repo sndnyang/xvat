@@ -136,11 +136,11 @@ See the bash files in scripts/
 If you found this code useful, please cite our paper.
 
 ```latex
-@article{xvat2020,
-	title={Learning with Multiplicative Perturbations},
-	author={Xiulong Yang and Shihao Ji},
-	journal={International Conference on Pattern Recognition (ICPR)},
-	year={2020}
+@inproceedings{xvat2020,
+  title={Learning with Multiplicative Perturbations},
+  author={Xiulong Yang and Shihao Ji},
+  booktitle={International Conference on Pattern Recognition (ICPR)},
+  year={2020}
 }
 ```
 
